@@ -101,6 +101,79 @@ void add(char *name, char *number)
 // The most complicated.
 void delete(char name[3])
 {
+    struct record* r = data;
+    struct record** q = &data;
+    int result;
+    while (r != NULL) {
+        if ((result = compare(name, r) <= 0)) {
+            q = &(r->left);
+            r = r->left;
+        }
+        else if (result == 0)
+            break;
+        else {
+            q = &(r->right);
+            r = r->right;
+        }
+    }
+                                                /*name not found*/
+    if (r == NULL) {
+        printf("Couldn't find the name.\n");    /*name not found*/
+        return;
+    }
+
+    else {                                     
+                                                /*Node doesn't have any child*/
+        if (r->right == NULL && r->left == NULL) {
+            *q = NULL;                         
+            free_node(r);
+        }
+                                                /*Node have only left child*/
+        else if (r->right == NULL) {
+                            
+            *q = r->left;                      
+            free_node(r);
+        }
+                                                /*Node have only right child*/
+        else if (r->left == NULL) {
+            *q = r->right;
+            free_node(r);
+        }   
+                                                /*Node have two children*/
+        else {
+            struct record* rightSuccessor = r->right;
+            struct record** s = &rightSuccessor;
+            if (rightSuccessor->left == NULL) {
+                r->name[0] = rightSuccessor->name[0];
+                r->name[1] = rightSuccessor->name[1];
+                r->name[2] = rightSuccessor->name[2];
+                r->number[0] = rightSuccessor->number[0];
+                r->number[1] = rightSuccessor->number[1];
+                r->number[2] = rightSuccessor->number[2];
+                r->number[3] = rightSuccessor->number[3];
+                s = &(r->right);
+                *s = rightSuccessor->right;
+                free_node(rightSuccessor);
+            }
+            else {
+                struct record* successor = rightSuccessor;
+                while (successor->left != NULL) {
+                    s = &(successor->left);
+                    successor = successor->left;
+                }
+                r->name[0] = successor->name[0]; 
+                r->name[1] = successor->name[1];
+                r->name[2] = successor->name[2];
+                r->number[0] = successor->number[0]; 
+                r->number[1] = successor->number[1]; 
+                r->number[2] = successor->number[2];  
+                r->number[3] = successor->number[3];
+                *s = r->right;
+                free_node(successor);
+            }
+        }
+        printf("Couldn't find the name.\n"); 
+    }
   // Messages to print
   //  printf("The name was deleted.\n");  
   //  printf("Couldn't find the name.\n");
