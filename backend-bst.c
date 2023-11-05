@@ -105,7 +105,8 @@ void delete(char name[3])
     struct record** q = &data;
     int result;
     while (r != NULL) {
-        if ((result = compare(name, r) <= 0)) {
+        result = compare(name, r);
+        if (result< 0) {
             q = &(r->left);
             r = r->left;
         }
@@ -129,8 +130,7 @@ void delete(char name[3])
             free_node(r);
         }
                                                 /*Node have only left child*/
-        else if (r->right == NULL) {
-                            
+        else if (r->right == NULL) {        
             *q = r->left;                      
             free_node(r);
         }
@@ -172,7 +172,7 @@ void delete(char name[3])
                 free_node(successor);
             }
         }
-        printf("Couldn't find the name.\n"); 
+        printf("The name was deleted.\n"); 
     }
   // Messages to print
   //  printf("The name was deleted.\n");  
